@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rollback Manager - TactFlow</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header card">
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <h1>TactFlow</h1>
+            </div>
+            <div class="header-status">
+                <div class="connection-status" id="connection-status">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Backend Offline</span>
+                </div>
+                <div class="token-badge hidden" id="token-badge-container">
+                    <span class="badge-label">Session:</span>
+                    <span class="badge-value" id="active-token-val">None</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Sidebar (Navigation) -->
+            <div class="sidebar">
+                <div class="card nav-panel">
+                    <h3>Actions</h3>
+                    <ul class="nav-tabs">
+                        <li class="tab-link" onclick="location.href='nudge.html'">
+                            <span class="icon suggest-icon"></span>
+                            Nudge Generator
+                        </li>
+                        <li class="tab-link" onclick="location.href='distill.html'">
+                            <span class="icon distill-icon"></span>
+                            Persona Distiller
+                        </li>
+                        <li class="tab-link active" onclick="location.href='rollback.html'">
+                            <span class="icon rollback-icon"></span>
+                            Rollback Manager
+                        </li>
+                    </ul>
+                    <button class="btn btn-secondary btn-sm" id="btn-logout" style="margin-top: 2rem; width: 100%;">Logout</button>
+                </div>
+            </div>
+
+            <!-- Right Workspace (Forms & Outputs) -->
+            <div class="workspace">
+                <!-- Tab Content for Rollback Manager -->
+                <div class="tab-content active">
+                    <div class="card">
+                        <div class="panel-header">
+                            <h2>Profile Rollback Manager</h2>
+                            <span class="badge">Rollback API</span>
+                        </div>
+                        <p class="panel-desc">Decrypt the active profile or rollback to any archived version snapshot.</p>
+
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label for="rollback-contact-id">Contact ID</label>
+                                <input type="text" id="rollback-contact-id" value="" placeholder="e.g. contact_john_doe_99">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="rollback-version-id">Target Version ID</label>
+                                <input type="text" id="rollback-version-id" value="" placeholder="e.g. v1">
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" id="btn-view-profile">Retrieve Current Profile</button>
+                            <button class="btn btn-danger" id="btn-rollback-profile">Rollback to Version</button>
+                        </div>
+                    </div>
+
+                    <div class="output-container hidden" id="rollback-output-container">
+                        <div class="card output-card">
+                            <h3>Profile Details</h3>
+                            <div class="profile-layout" id="rollback-profile-details">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Inspector -->
+        <footer class="footer card">
+            <div class="footer-header">
+                <h3>Under the Hood: JSON Inspector</h3>
+                <span class="inspector-badge">API Logs</span>
+            </div>
+            <div class="inspector-grid">
+                <div class="inspector-col">
+                    <label>JSON Request Payload</label>
+                    <pre id="json-request">{}</pre>
+                </div>
+                <div class="inspector-col">
+                    <label>JSON Response Output</label>
+                    <pre id="json-response">{}</pre>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="shared.js?v=1.2"></script>
+    <script src="rollback.js?v=1.1"></script>
+</body>
+</html>

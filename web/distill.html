@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persona Distiller - TactFlow</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header card">
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <h1>TactFlow</h1>
+            </div>
+            <div class="header-status">
+                <div class="connection-status" id="connection-status">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Backend Offline</span>
+                </div>
+                <div class="token-badge hidden" id="token-badge-container">
+                    <span class="badge-label">Session:</span>
+                    <span class="badge-value" id="active-token-val">None</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Sidebar (Navigation) -->
+            <div class="sidebar">
+                <div class="card nav-panel">
+                    <h3>Actions</h3>
+                    <ul class="nav-tabs">
+                        <li class="tab-link" onclick="location.href='nudge.html'">
+                            <span class="icon suggest-icon"></span>
+                            Nudge Generator
+                        </li>
+                        <li class="tab-link active" onclick="location.href='distill.html'">
+                            <span class="icon distill-icon"></span>
+                            Persona Distiller
+                        </li>
+                        <li class="tab-link" onclick="location.href='rollback.html'">
+                            <span class="icon rollback-icon"></span>
+                            Rollback Manager
+                        </li>
+                    </ul>
+                    <button class="btn btn-secondary btn-sm" id="btn-logout" style="margin-top: 2rem; width: 100%;">Logout</button>
+                </div>
+            </div>
+
+            <!-- Right Workspace (Forms & Outputs) -->
+            <div class="workspace">
+                <!-- Tab Content for Persona Distiller -->
+                <div class="tab-content active">
+                    <div class="card">
+                        <div class="panel-header">
+                            <h2>Behavioral Persona Distiller</h2>
+                            <span class="badge">Distill API</span>
+                        </div>
+                        <p class="panel-desc">Submit raw transcripts to extract new traits and update the encrypted contact profile.</p>
+
+                        <div class="form-group">
+                            <label for="distill-contact-id">Contact ID</label>
+                            <input type="text" id="distill-contact-id" value="" placeholder="e.g. contact_john_doe_99">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Raw Transcript Turns</label>
+                            <div class="history-list" id="distill-transcript-list">
+                                <div class="history-row">
+                                    <select class="history-sender">
+                                        <option value="user">User</option>
+                                        <option value="counterpart" selected>Counterpart</option>
+                                    </select>
+                                    <input type="text" class="history-msg" value="" placeholder="e.g. I cannot sign off on that without seeing the testing logs first.">
+                                    <button class="btn btn-danger btn-sm btn-delete-row">×</button>
+                                </div>
+                            </div>
+                            <div class="btn-group" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button class="btn btn-secondary btn-sm" id="btn-distill-add-row">+ Add Turn</button>
+                                <button class="btn btn-secondary btn-sm" id="btn-import-transcript">Import Transcript File</button>
+                                <input type="file" id="import-file-input" accept=".txt" style="display: none;">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg" id="btn-run-distillation">Run Distillation Task</button>
+                    </div>
+
+                    <!-- Output Distill -->
+                    <div class="output-container hidden" id="distill-output-container">
+                        <div class="card output-card">
+                            <h3>Distillation Queue Status</h3>
+                            <div class="task-info">
+                                <div class="task-row">
+                                    <span class="task-label">Task ID:</span>
+                                    <span class="task-value" id="distill-task-id">None</span>
+                                </div>
+                                <div class="task-row">
+                                    <span class="task-label">Status:</span>
+                                    <span class="task-value" id="distill-task-status">Queued</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="distill-progress-fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="card output-card" id="updated-profile-card">
+                            <h3>Distilled Profile Results</h3>
+                            <div class="profile-layout" id="profile-details-content">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Inspector -->
+        <footer class="footer card">
+            <div class="footer-header">
+                <h3>Under the Hood: JSON Inspector</h3>
+                <span class="inspector-badge">API Logs</span>
+            </div>
+            <div class="inspector-grid">
+                <div class="inspector-col">
+                    <label>JSON Request Payload</label>
+                    <pre id="json-request">{}</pre>
+                </div>
+                <div class="inspector-col">
+                    <label>JSON Response Output</label>
+                    <pre id="json-response">{}</pre>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="shared.js?v=1.2"></script>
+    <script src="distill.js?v=1.1"></script>
+</body>
+</html>

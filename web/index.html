@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login - TactFlow</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="container" style="max-width: 600px; padding: 4rem 1rem;">
+        <!-- Header -->
+        <header class="header card" style="margin-bottom: 2rem;">
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <h1>TactFlow</h1>
+            </div>
+            <div class="header-status">
+                <div class="connection-status" id="connection-status">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Backend Offline</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Card -->
+        <div class="card panel-auth" style="margin-bottom: 2rem;">
+            <h2>Secure Login</h2>
+            <p class="panel-desc">Derive encryption keys & initialize your secure session</p>
+            
+            <div class="form-group">
+                <label for="login-email">User Email</label>
+                <input type="email" id="login-email" value="" placeholder="e.g. admin@tactflow.ai">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password Hash / Secret</label>
+                <input type="password" id="login-password" value="" placeholder="e.g. Password secret/hash">
+            </div>
+            <div class="form-group">
+                <label for="login-passphrase">Vault Passphrase</label>
+                <input type="password" id="login-passphrase" value="" placeholder="e.g. john_doe_vault_passphrase">
+            </div>
+            <button class="btn btn-primary btn-lg" id="btn-login" style="margin-top: 1rem;">Initialize Session</button>
+        </div>
+
+        <!-- JSON Inspector -->
+        <footer class="footer card">
+            <div class="footer-header">
+                <h3>Under the Hood: JSON Inspector</h3>
+                <span class="inspector-badge">API Logs</span>
+            </div>
+            <div class="inspector-grid">
+                <div class="inspector-col">
+                    <label>JSON Request Payload</label>
+                    <pre id="json-request">{}</pre>
+                </div>
+                <div class="inspector-col">
+                    <label>JSON Response Output</label>
+                    <pre id="json-response">{}</pre>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="shared.js?v=1.2"></script>
+    <script src="index.js?v=1.1"></script>
+</body>
+</html>

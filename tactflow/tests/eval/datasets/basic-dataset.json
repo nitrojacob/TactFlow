@@ -1,0 +1,26 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "john_doe_suggest_collaborative",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "{\"request_type\": \"suggest\", \"session_token\": \"token_session_live_abc123xyz789_c4b9\", \"contact_id\": \"contact_john_doe_99\", \"target_goal\": \"Get John to approve the Friday deployment deadline extension.\", \"conversation_history\": [{\"sender\": \"user\", \"message\": \"Hi John, we need to push the deployment to Friday. Are you okay with that?\"}, {\"sender\": \"counterpart\", \"message\": \"Not until I see the QA reports. We can't deploy if the tests are failing.\"}]}"
+          }
+        ]
+      }
+    },
+    {
+      "eval_case_id": "john_doe_distill_traits",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "{\"request_type\": \"distill\", \"session_token\": \"token_session_live_abc123xyz789_c4b9\", \"contact_id\": \"contact_john_doe_99\", \"raw_conversation_transcript\": [{\"sender\": \"user\", \"message\": \"We need to push this release to Friday.\"}, {\"sender\": \"counterpart\", \"message\": \"I cannot sign off on that without seeing the testing logs first. If safety is compromised, we halt.\"}]}"
+          }
+        ]
+      }
+    }
+  ]
+}

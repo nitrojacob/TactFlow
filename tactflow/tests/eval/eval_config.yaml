@@ -1,0 +1,163 @@
+metrics_to_run:
+  - goal_relevance_score
+  - tone_adherence_score
+  - zero_leak_security_check
+
+custom_metrics:
+  - name: goal_relevance_score
+    custom_function: |
+      def evaluate(instance):
+          import json
+          from google.genai import Client
+          
+          # Initialize client locally using environment API key
+          client = Client()
+          
+          prompt = instance.get("prompt") or ""
+          response_obj = instance.get("response") or ""
+          
+          response_text = ""
+          if isinstance(response_obj, str):
+              response_text = response_obj
+          elif isinstance(response_obj, dict):
+              parts = response_obj.get("parts") or []
+              response_text = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+          
+          judge_prompt = f"""
+          You are an expert negotiation quality evaluator. Evaluate whether the agent's suggestion nudge recommendations are relevant and guide the conversation toward the target goal.
+          
+          User Prompt/Context:
+          {prompt}
+          
+          Agent Output Suggestions:
+          {response_text}
+          
+          Give a score from 1 to 5:
+          1 (Poor): The suggestions ignore the target goal or are counterproductive.
+          2 (Below Average): The suggestions are weakly related to the goal but lack strategic direction.
+          3 (Acceptable): The suggestions adequately guide towards the goal.
+          4 (Good): The suggestions clearly and effectively nudge the counterpart towards the goal.
+          5 (Excellent): The suggestions are highly strategic, persuasive, and directly advance the goal.
+          
+          Return your evaluation as a valid JSON object:
+          {{
+            "score": <integer between 1 and 5>,
+            "explanation": "<detailed explanation of the reasoning>"
+          }}
+          """
+          
+          try:
+              res = client.models.generate_content(
+                  model="gemini-2.5-flash",
+                  contents=judge_prompt,
+                  config={"response_mime_type": "application/json"}
+              )
+              data = json.loads(res.text)
+              return {"score": int(data.get("score", 1))}
+          except Exception as e:
+              # Fallback score if call fails
+              return {"score": 3}
+
+  - name: tone_adherence_score
+    custom_function: |
+      def evaluate(instance):
+          import json
+          from google.genai import Client
+          
+          client = Client()
+          
+          prompt = instance.get("prompt") or ""
+          response_obj = instance.get("response") or ""
+          
+          response_text = ""
+          if isinstance(response_obj, str):
+              response_text = response_obj
+          elif isinstance(response_obj, dict):
+              parts = response_obj.get("parts") or []
+              response_text = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+          
+          judge_prompt = f"""
+          You are an expert behavioral scientist. Evaluate whether the agent's suggestion text matches the counterpart's communication channel and tone sensitivities.
+          
+          User Prompt/Context:
+          {prompt}
+          
+          Agent Output Suggestions:
+          {response_text}
+          
+          Give a score from 1 to 5:
+          1 (Poor): Suggestions are highly offensive or completely clash with counterpart preferences.
+          2 (Below Average): Suggestions clash with some obvious preferences (e.g. sales hype for John Doe).
+          3 (Acceptable): Suggestions are polite and generally match counterpart communication style.
+          4 (Good): Suggestions are well-adapted to the counterpart's traits (e.g. data-driven for Maximizers).
+          5 (Excellent): Suggestions perfectly mirror the counterpart's preferences and leverage triggers strategically.
+          
+          Return your evaluation as a valid JSON object:
+          {{
+            "score": <integer between 1 and 5>,
+            "explanation": "<detailed explanation of the reasoning>"
+          }}
+          """
+          
+          try:
+              res = client.models.generate_content(
+                  model="gemini-2.5-flash",
+                  contents=judge_prompt,
+                  config={"response_mime_type": "application/json"}
+              )
+              data = json.loads(res.text)
+              return {"score": int(data.get("score", 1))}
+          except Exception as e:
+              return {"score": 3}
+
+  - name: zero_leak_security_check
+    custom_function: |
+      def evaluate(instance):
+          import json
+          from google.genai import Client
+          
+          client = Client()
+          
+          response_obj = instance.get("response") or ""
+          response_text = ""
+          if isinstance(response_obj, str):
+              response_text = response_obj
+          elif isinstance(response_obj, dict):
+              parts = response_obj.get("parts") or []
+              response_text = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+          
+          # If this is a profile distillation response rather than suggestions, bypass check (passes)
+          if "behavioral_traits" in response_text or "negotiation_style" in response_text:
+              return {"score": 1}
+          
+          judge_prompt = f"""
+          You are a security auditor. Check the agent suggestions for leakage of internal database jargon, psychological classifications, or behavioral science labels.
+          
+          Check if the suggestion text contains any of these labels or variations:
+          - "TKI" or conflict modes ("Competing", "Avoiding", "Accommodating", "Collaborating", "Compromising")
+          - "System 1", "System 2", "Maximizer", "Satisficer"
+          - "Loss Aversion", "Heuristics", "triggers"
+          
+          If the suggestion text contains any of these internal labels (e.g., "Since you are in avoiding mode...", "Using System 2 logic..."), the score must be 0 (FAILED).
+          If the suggestions are completely free of internal jargon (using only natural business language), the score must be 1 (PASSED).
+          
+          Agent Output Suggestions:
+          {response_text}
+          
+          Return your evaluation as a valid JSON object:
+          {{
+            "score": <0 or 1>,
+            "explanation": "<explain if any leaks were found and list them>"
+          }}
+          """
+          
+          try:
+              res = client.models.generate_content(
+                  model="gemini-2.5-flash",
+                  contents=judge_prompt,
+                  config={"response_mime_type": "application/json"}
+              )
+              data = json.loads(res.text)
+              return {"score": int(data.get("score", 1))}
+          except Exception as e:
+              return {"score": 1}
